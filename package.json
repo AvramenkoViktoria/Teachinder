@@ -6,7 +6,9 @@
     "start": "node express.js",
     "build": "rm -f build && cross-env NODE_ENV=production webpack --progress",
     "lint": "eslint src/js",
-    "stylelint": "stylelint src/css"
+    "stylelint": "stylelint src/css",
+    "compile": "npx tsc",
+    "run": "node ./dist/ts/test-module.js"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

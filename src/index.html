@@ -1,21 +1,398 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head itemscope itemtype="http://schema.org/WebSite">
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-   <head itemscope itemtype="http://schema.org/WebSite">
+        <title>Project</title>
 
-      <meta charset="utf-8">
-      <meta http-equiv="x-ua-compatible" content="ie=edge">
-      <meta name="msapplication-tap-highlight" content="no">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./css/app.css" />
+    </head>
 
-      <title>Project</title>
+    <body itemscope itemtype="http://schema.org/WebPage">
+        <div id="main-container">
+            <header class="logo-header">
+                <img
+                    src="images/teachinder-logo.jpg"
+                    alt="Teachinder label"
+                    class="logo"
+                />
+                <form class="search-form">
+                    <input
+                        type="text"
+                        id="search-info"
+                        name="search-info"
+                        placeholder="Name, note or age to search"
+                        minlength="1"
+                        maxlength="10"
+                        size="10"
+                    />
+                    <button type="submit" class="search-button">Search</button>
+                </form>
+            </header>
+            <div class="info-menu">
+                <div class="info-options">
+                    <a href="#teachers" class="info-option">Teachers</a>
+                    <a href="#statistics" class="info-option">Statistics</a>
+                    <a href="#favorites" class="info-option">Favorites</a>
+                    <a href="#about" class="info-option">About</a>
+                </div>
+                <button type="button" class="add-teacher-btn">
+                    Add teacher
+                </button>
+            </div>
+            <div class="section-name-cont">
+                <h3 class="section-name" id="teachers">Top Teachers</h3>
+            </div>
+            <form class="filter-form">
+                <div class="filter-option with-border">
+                    <label class="filter-option-label">Age</label>
+                    <select name="teacher-age">
+                        <option value="1">18-30</option>
+                        <option value="2">31-50</option>
+                        <option value="3">50+</option>
+                    </select>
+                </div>
+                <div class="filter-option with-border">
+                    <label class="filter-option-label">Region</label>
+                    <select name="teacher-region">
+                        <option value="1">Africa</option>
+                        <option value="2">Asia</option>
+                        <option value="3">Central America</option>
+                        <option value="4">Europe</option>
+                        <option value="5">Middle East</option>
+                        <option value="6">North America</option>
+                        <option value="7">South America</option>
+                    </select>
+                </div>
+                <div class="filter-option with-border">
+                    <label class="filter-option-label">Sex</label>
+                    <select name="teacher-sex">
+                        <option value="1">Male</option>
+                        <option value="2">Female</option>
+                    </select>
+                </div>
+                <div class="filter-option with-border">
+                    <input
+                        type="checkbox"
+                        id="photo-required"
+                        class="filter-option-label"
+                        name="photo-required"
+                        unchecked
+                    />
+                    <label for="scales" class="filter-option-label"
+                        >Only with photo</label
+                    >
+                </div>
+                <div class="filter-option">
+                    <input
+                        type="checkbox"
+                        id="only-favorites"
+                        class="filter-option-label"
+                        name="only-favorites"
+                        unchecked
+                    />
+                    <label for="scales" class="filter-option-label"
+                        >Only favorites</label
+                    >
+                </div>
+            </form>
+            <div class="teachers-list">
+                <!-- <div class="teacher-profile">
+                    <div class="profile-pic-container">
+                        <img
+                            src="images/Segin.png"
+                            class="teacher-photo"
+                            alt="Teacher's photo"
+                        />
+                    </div>
+                    <label class="teacher-name">Liubomyr Segin</label>
+                    <label class="subject">Ukrainian language</label>
+                    <label class="country">Ukraine</label>
+                </div>
+                <div class="teacher-profile fav">
+                    <div class="profile-pic-container">
+                        <img
+                            src="images/Segin.png"
+                            class="teacher-photo"
+                            alt="Teacher's photo"
+                        />
+                    </div>
+                    <label class="teacher-name">Liubomyr Segin</label>
+                    <label class="subject">Ukrainian language</label>
+                    <label class="country">Ukraine</label>
+                </div>
+                <div class="teacher-profile fav">
+                    <div class="profile-pic-container">
+                        <label class="teacher-initials">L.S.</label>
+                    </div>
+                    <label class="teacher-name">Liubomyr Segin</label>
+                    <label class="subject">Ukrainian language</label>
+                    <label class="country">Ukraine</label>
+                </div>
+                <div class="teacher-profile">
+                    <div class="profile-pic-container">
+                        <img
+                            src="images/Segin.png"
+                            class="teacher-photo fav"
+                            alt="Teacher's photo"
+                        />
+                    </div>
+                    <label class="teacher-name">Liubomyr Segin</label>
+                    <label class="subject">Ukrainian language</label>
+                    <label class="country">Ukraine</label>
+                </div>
+                <div class="teacher-profile">
+                    <div class="profile-pic-container">
+                        <img
+                            src="images/Segin.png"
+                            class="teacher-photo"
+                            alt="Teacher's photo"
+                        />
+                    </div>
+                    <label class="teacher-name">Liubomyr Segin</label>
+                    <label class="subject">Ukrainian language</label>
+                    <label class="country">Ukraine</label>
+                </div> -->
+            </div>
+            <div class="section-name-cont">
+                <h3 class="section-name" id="statistics">Statistics</h3>
+            </div>
+            <div class="table-container">
+                <table class="teachers-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Speciality</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Nationality</th>
+                    </tr>
+                    <tr>
+                        <td>Daisy Alexander</td>
+                        <td>Chemistry</td>
+                        <td>28</td>
+                        <td>Female</td>
+                        <td>Vietnam</td>
+                    </tr>
+                    <tr>
+                        <td>Julia Bradley</td>
+                        <td>Math</td>
+                        <td>26</td>
+                        <td>Female</td>
+                        <td>USA</td>
+                    </tr>
+                    <tr>
+                        <td>Rita Hart</td>
+                        <td>Art</td>
+                        <td>41</td>
+                        <td>Female</td>
+                        <td>Ireland</td>
+                    </tr>
+                    <tr>
+                        <td>Liubomyr Segin</td>
+                        <td>Ukranian language</td>
+                        <td>50</td>
+                        <td>Male</td>
+                        <td>Ukraine</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="table-pages">
+                <button type="button">1</button>
+                <button type="button">2</button>
+                <button type="button">3</button>
+                <label>...</label>
+                <button type="button">Last</button>
+            </div>
+            <div class="section-name-cont" id="favorites">
+                <h3 class="section-name">Favorites</h3>
+            </div>
+            <div class="favorites-carousel">
+                <button class="left-arrow-button" type="button">
+                    <img
+                        src="images/left-arrow.png"
+                        class="left-arrow-pic"
+                        alt="left arrow picture"
+                    />
+                </button>
+                <div class="favorites-list">
+                    <div class="teacher-profile favorite">
+                        <div class="profile-pic-container">
+                            <img
+                                src="images/Segin.png"
+                                class="teacher-photo"
+                                alt="Teacher's photo"
+                            />
+                        </div>
+                        <label class="teacher-name">Liubomyr Segin</label>
+                        <label class="country">Ukraine</label>
+                    </div>
+                    <div class="teacher-profile favorite">
+                        <div class="profile-pic-container">
+                            <img
+                                src="images/Segin.png"
+                                class="teacher-photo"
+                                alt="Teacher's photo"
+                            />
+                        </div>
+                        <label class="teacher-name">Liubomyr Segin</label>
+                        <label class="country">Ukraine</label>
+                    </div>
+                    <div class="teacher-profile favorite">
+                        <div class="profile-pic-container">
+                            <img
+                                src="images/Segin.png"
+                                class="teacher-photo"
+                                alt="Teacher's photo"
+                            />
+                        </div>
+                        <label class="teacher-name">Liubomyr Segin</label>
+                        <label class="country">Ukraine</label>
+                    </div>
+                    <div class="teacher-profile favorite">
+                        <div class="profile-pic-container">
+                            <img
+                                src="images/Segin.png"
+                                class="teacher-photo"
+                                alt="Teacher's photo"
+                            />
+                        </div>
+                        <label class="teacher-name">Liubomyr Segin</label>
+                        <label class="country">Ukraine</label>
+                    </div>
+                </div>
+                <button class="right-arrow-button" type="button">
+                    <img
+                        src="images/righr-arrow.png"
+                        class="right-arrow-pic"
+                        alt="right arrow pic"
+                    />
+                </button>
+            </div>
+            <div class="section-name-cont">
+                <h3 class="section-name underline" id="about"></h3>
+            </div>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit ut
+                dolorem eveniet exercitationem? Corporis rerum quidem voluptatum
+                porro laboriosam, impedit reprehenderit in distinctio facere eos
+                quasi culpa similique doloremque consequatur?
+            </p>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
+                delectus saepe id consectetur adipisci, et quisquam optio.
+                Perspiciatis quibusdam maxime quasi illo quas. Laboriosam
+                quisquam, eum quidem asperiores amet rerum!
+            </p>
+            <footer>
+                <div class="info-menu">
+                    <div class="info-options">
+                        <a href="#teachers" class="info-option">Teachers</a>
+                        <a href="#statistics" class="info-option">Statistics</a>
+                        <a href="#favorites" class="info-option">Favorites</a>
+                        <a href="#about" class="info-option">About</a>
+                    </div>
+                    <button type="button" class="add-teacher-btn">
+                        Add teacher
+                    </button>
+                </div>
+            </footer>
+        </div>
+        <!-- <div class="blur-container">
+      <div class="add-teacher-popup">
+         <header class="upper-menu">
+            <h1>Add Teacher</h1>
+            <button type="button" class="cross-button"><i class="fa fa-times"></i></button>
+         </header>
+         <form class="teacher-data-form">
+            <label>Name</label>
+            <input type="text" id="teacher-name" name="teacher-name" placeholder="Enter name" minlength="1" maxlength="30" size="30" />
+            <label>Speciality</label>
+            <select name="subject" id="subject">
+               <option value="1">Mathematics</option>
+               <option value="2">English</option>
+               <option value="3">Literature</option>
+               <option value="4">Science</option>
+               <option value="5">Music</option>
+            </select>
+            <fieldset class="personal-data">
+               <div>
+               <label class="country-data">Country</label>
+               <select name="country" id="country">
+                  <option value="1">Ukraine</option>
+                  <option value="2">USA</option>
+                  <option value="3">Germany</option>
+                  <option value="4">Uganda</option>
+               </select>
+            </div>
+            <div>
+               <label>City</label>
+               <input type="text" id="teacher-city" name="teacher-city" minlength="1" maxlength="30"/>
+            </div>
+            <div>
+               <label>Email</label>
+               <input type="email" id="email" name="email" />
+            </div>
+            <div>
+               <label>Phone</label>
+               <input type="tel" id="phone-number" name="phone-number" />
+            </div>
+            <div>
+               <label>Date of birth</label>
+               <input type="date" id="birth-date" name="birth-date" />
+            </div>
+            </fieldset>
+            <fieldset class="sex-container">
+            <label>Sex</label>
+            <div class="sex-options">
+            <label for="scales" class="teacher-sex">Male</label>
+            <input type="radio" id="male" class="teacher-sex" name="male" unchecked />
+            <label for="scales" class="teacher-sex">Female</label>
+            <input type="radio" id="female" class="teacher-sex" name="female" unchecked />
+         </div>
+         </fieldset>
+         <div class="background-color">
+            <label>Background color</label>
+            <input type="color" />
+         </div>
+         <div class="notes">
+            <label>Notes (optional)</label>
+            <textarea name="notes" id="notes"></textarea>
+         </div>
+            <button type="submit" class="add-btn">Add</button>
+         </form>
+      </div>
+   </div> -->
 
-      <link rel="stylesheet" href="./css/app.css">
-
-   </head>
-
-   <body itemscope itemtype="http://schema.org/WebPage">
-      <script type="text/javascript" src="./js/app.js"></script>
-      
-  </body>
+        <!-- <div class="blur-container">
+      <div class="teacher-info-popup">
+         <header class="upper-menu">
+            <h1>Teacher Info</h1>
+            <button type="button" class="cross-button"><i class="fa fa-times"></i></button>
+         </header>
+         <div class="info">
+            <div class="main-frame">
+               <div class="popup-img-container">
+            <img src="/src/images/Segin.png" class="popup-photo" alt="Teacher's photo" />
+         </div>
+            <ul class="info-list">
+               <li><h2 class="popup-name">Liubomyr Segin</h2></li>
+               <li><label class="popup-subject">Ukrainian language</label></li>
+               <li><label class="popup-city">Kyiv, Ukraine</label></li>
+               <li><label class="popup-age-sex">50,Male</label></li>
+               <li><a href="mailto:liubomirchyk@ukr.net" class="popup-email">liubomirchyk@ukr.net</a></li>
+               <li><label class="popup-number">+(380)96-499-3252</label></li>
+            </ul>
+            <div class="lorem-container">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius nobis maiores alias ab distinctio magni numquam autem aliquid nostrum corporis officiis quas cupiditate explicabo, minima error iusto eos adipisci enim!</p>
+            <a href="" class="toggle-map">toggle map</a>
+         </div>
+         </div>
+         </div>
+      </div>
+   </div> -->
+        <script type="module" src="./js/ts/app.js"></script>
+    </body>
 </html>

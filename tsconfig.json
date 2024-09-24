@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ESNext",
+      "module": "ESNext",
+      "lib": ["DOM", "ESNext"],
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "esModuleInterop": true,
+      "outDir": "./src/js",
+      "rootDir": "./src",
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules"]
+  }
