@@ -1,10 +1,40 @@
 export default {
     hello: 'world',
     userList: uniteTwoDataLists(),
+    filterUsers: filterUsers,
+    sortUsers: sortUsers,
+    findUsers: findUsers,
+    validatePhoneNumber: validatePhoneNumber,
+    validateEmail: validEmailFormat,
+    validateColor: validateColorFormat,
+    getFirstWord: getFirstWord,
+    calculateAge: calculateAge,
 };
 
 import {randomUserMock, additionalUsers} from './FE4U-Lab2-mock.js';
 import {User} from './user-interfaces.js';
+
+const countriesByRegion: {[key: string]: string[]} = {
+    africa: [],
+    asia: ['Iran'],
+    'central america': [],
+    europe: [
+        'Germany',
+        'Ireland',
+        'Finland',
+        'Turkey',
+        'Switzerland',
+        'Spain',
+        'Norway',
+        'Denmark',
+        'France',
+        'Netherlands',
+    ],
+    'middle east': [],
+    'north america': ['United States', 'Canada'],
+    'south america': [],
+    australia: ['Australia'],
+};
 
 function formatTeachersData() {
     const outputUsers = randomUserMock.map((user) => ({
@@ -21,10 +51,15 @@ function formatTeachersData() {
         b_date: user.dob.date,
         age: user.dob.age,
         phone: user.phone,
-        picture_large: '/images/Segin.png',
+        picture_large: setRandomPic(),
         picture_thumbnail: user.picture.thumbnail,
     }));
     return outputUsers;
+}
+
+function setRandomPic(): string {
+    const isPic: boolean = Math.random() < 0.5;
+    return isPic ? '/images/Segin.png' : '';
 }
 
 export function createRandomColor() {
@@ -93,7 +128,10 @@ export function uniteTwoDataLists(): User[] {
     return unitedUsers;
 }
 
-function validatePhoneNumber(phoneNumber: string, country: string): boolean {
+export function validatePhoneNumber(
+    phoneNumber: string,
+    country: string,
+): boolean {
     const regexes: {[key: string]: RegExp} = {
         Germany: /^\+49\d{10,11}$/,
         Ireland: /^\+353\d{7,10}$/,
@@ -121,9 +159,20 @@ function validatePhoneNumber(phoneNumber: string, country: string): boolean {
     }
 }
 
-function validEmailFormat(input: string): boolean {
+export function validEmailFormat(input: string): boolean {
     const regex = /^[^\s@]+@[^\s@]+$/;
     return regex.test(input);
+}
+
+export function validateColorFormat(color: string): boolean {
+    const regex = /^#[0-9A-F]{6}$/i;
+    return regex.test(color);
+}
+
+export function getFirstWord(input: string): string {
+    const trimmedInput = input.trim();
+    const words = trimmedInput.split(/\s+/);
+    return words[0] || '';
 }
 
 function validateProfiles(users: User[]): User[] {
@@ -178,7 +227,20 @@ function validateProfiles(users: User[]): User[] {
     return correctProfiles;
 }
 
-// validateProfiles(uniteTwoDataLists());
+export function calculateAge(birthDate: string): number {
+    const birth = new Date(birthDate);
+    const today = new Date();
+
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDifference = today.getMonth() - birth.getMonth();
+    const dayDifference = today.getDate() - birth.getDate();
+
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+        age--;
+    }
+
+    return age;
+}
 
 function parseAgeFilter(ageFilter: string): (age: number) => boolean {
     const rangeRegex =
@@ -228,22 +290,31 @@ function parseAgeFilter(ageFilter: string): (age: number) => boolean {
     return (age: number) => lowerBoundCheck(age) && upperBoundCheck(age);
 }
 
-// const ageFilterFunc = parseAgeFilter('>20 <30');
-// console.log(ageFilterFunc(25));
+function isCountryInRegion(country: string, region: string): boolean {
+    country = country.toLowerCase();
+    region = region.toLowerCase();
 
-interface filterFields {
-    age?: string;
-    country?: string;
-    gender?: string;
-    favorite?: string;
+    const countries = countriesByRegion[region];
+    return countries
+        ? countries.map((c) => c.toLowerCase()).includes(country)
+        : false;
 }
 
-function filterUsers(users: User[], filters: filterFields): User[] {
+export interface filterFields {
+    age?: string;
+    region?: string;
+    gender?: string;
+    photoRequired?: boolean;
+    favorite?: boolean;
+}
+
+export function filterUsers(users: User[], filters: filterFields): User[] {
+    console.log(users);
     return users.filter((user) => {
         return Object.entries(filters).every(([key, filterValue]) => {
             if (filterValue === undefined || filterValue === null) return true;
 
-            if (key === 'age' && typeof filterValue === 'string') {
+            if (key === 'age') {
                 try {
                     const ageFilterFunc = parseAgeFilter(filterValue);
                     return ageFilterFunc(user.age);
@@ -251,6 +322,22 @@ function filterUsers(users: User[], filters: filterFields): User[] {
                     console.error(error);
                     return false;
                 }
+            } else if (key === 'region') {
+                if (user.full_name === 'Nora Shevchenko') {
+                    console.log(
+                        'Nora is in US: ' +
+                            isCountryInRegion(user.country, filterValue) +
+                            ' / ' +
+                            filterValue,
+                    );
+                }
+                return isCountryInRegion(user.country, filterValue);
+            } else if (key === 'photoRequired') {
+                return filterValue == true ? user.picture_large !== '' : true;
+            } else if (key === 'favorite') {
+                return filterValue
+                    ? user[key as keyof User] === filterValue
+                    : true;
             }
 
             const userValue = user[key as keyof User];
@@ -259,13 +346,11 @@ function filterUsers(users: User[], filters: filterFields): User[] {
     });
 }
 
-// const filters = {
-//     age: '>10 <80',
-//     country: 'Germany',
-// };
-// console.log(filterUsers(uniteTwoDataLists(), filters));
-
-function sortUsers(users: User[], param: string, ascending: boolean): User[] {
+export function sortUsers(
+    users: User[],
+    param: string,
+    ascending: boolean,
+): User[] {
     return users.sort((a, b) => {
         let fieldA = a[param];
         let fieldB = b[param];
@@ -302,16 +387,7 @@ function sortUsers(users: User[], param: string, ascending: boolean): User[] {
     });
 }
 
-// const sortedUsers = sortUsers(uniteTwoDataLists(), 'b_date', true);
-// console.log(sortedUsers);
-
-// const sortedUsers = sortUsers(uniteTwoDataLists(), 'age', false);
-// console.log(sortedUsers);
-
-// const sortedUsers = sortUsers(uniteTwoDataLists(), 'b_day', true);
-// console.log(sortedUsers);
-
-function findUsers(users: User[], param: string | number): User[] {
+export function findUsers(users: User[], param: string | number): User[] {
     return users.filter((user) => {
         if (
             typeof param == 'string' &&
@@ -324,21 +400,26 @@ function findUsers(users: User[], param: string | number): User[] {
                 console.error(error);
                 throw error;
             }
+        } else if (typeof param === 'string') {
+            const searchFields: (keyof User)[] = [
+                'full_name',
+                'course',
+                'country',
+                'gender',
+                'note',
+            ];
+            return searchFields.some((field) => {
+                const value = user[field];
+                return (
+                    typeof value === 'string' &&
+                    value.toLowerCase().includes(param.toLowerCase())
+                );
+            });
         } else {
             return Object.values(user).some((value) => value === param);
         }
     });
 }
-
-// const teachers: User[] = findUsers(uniteTwoDataLists(), 'Iran');
-// console.log(teachers);
-
-// const foundUsers = findUsers(uniteTwoDataLists(), '>64 <66');
-// console.log(foundUsers);
-
-// const foundUsers = findUsers(uniteTwoDataLists(), '><64 <66');
-// console.log(foundUsers);
-
 function calculatePercentage(users: User[], foundUsers: User[]) {
     return (foundUsers.length / users.length) * 100;
 }

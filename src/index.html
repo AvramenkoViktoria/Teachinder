@@ -9,6 +9,10 @@
         <title>Project</title>
 
         <link rel="stylesheet" href="./css/app.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
     </head>
 
     <body itemscope itemtype="http://schema.org/WebPage">
@@ -26,7 +30,7 @@
                         name="search-info"
                         placeholder="Name, note or age to search"
                         minlength="1"
-                        maxlength="10"
+                        maxlength="40"
                         size="10"
                     />
                     <button type="submit" class="search-button">Search</button>
@@ -56,7 +60,7 @@
                     </select>
                 </div>
                 <div class="filter-option with-border">
-                    <label class="filter-option-label">Region</label>
+                    <label class="filter-option-label">Country</label>
                     <select name="teacher-region">
                         <option value="1">Africa</option>
                         <option value="2">Asia</option>
@@ -99,104 +103,22 @@
                     >
                 </div>
             </form>
-            <div class="teachers-list">
-                <!-- <div class="teacher-profile">
-                    <div class="profile-pic-container">
-                        <img
-                            src="images/Segin.png"
-                            class="teacher-photo"
-                            alt="Teacher's photo"
-                        />
-                    </div>
-                    <label class="teacher-name">Liubomyr Segin</label>
-                    <label class="subject">Ukrainian language</label>
-                    <label class="country">Ukraine</label>
-                </div>
-                <div class="teacher-profile fav">
-                    <div class="profile-pic-container">
-                        <img
-                            src="images/Segin.png"
-                            class="teacher-photo"
-                            alt="Teacher's photo"
-                        />
-                    </div>
-                    <label class="teacher-name">Liubomyr Segin</label>
-                    <label class="subject">Ukrainian language</label>
-                    <label class="country">Ukraine</label>
-                </div>
-                <div class="teacher-profile fav">
-                    <div class="profile-pic-container">
-                        <label class="teacher-initials">L.S.</label>
-                    </div>
-                    <label class="teacher-name">Liubomyr Segin</label>
-                    <label class="subject">Ukrainian language</label>
-                    <label class="country">Ukraine</label>
-                </div>
-                <div class="teacher-profile">
-                    <div class="profile-pic-container">
-                        <img
-                            src="images/Segin.png"
-                            class="teacher-photo fav"
-                            alt="Teacher's photo"
-                        />
-                    </div>
-                    <label class="teacher-name">Liubomyr Segin</label>
-                    <label class="subject">Ukrainian language</label>
-                    <label class="country">Ukraine</label>
-                </div>
-                <div class="teacher-profile">
-                    <div class="profile-pic-container">
-                        <img
-                            src="images/Segin.png"
-                            class="teacher-photo"
-                            alt="Teacher's photo"
-                        />
-                    </div>
-                    <label class="teacher-name">Liubomyr Segin</label>
-                    <label class="subject">Ukrainian language</label>
-                    <label class="country">Ukraine</label>
-                </div> -->
-            </div>
+            <div class="teachers-list"></div>
             <div class="section-name-cont">
                 <h3 class="section-name" id="statistics">Statistics</h3>
             </div>
             <div class="table-container">
                 <table class="teachers-table">
-                    <tr>
-                        <th>Name</th>
-                        <th>Speciality</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>Nationality</th>
-                    </tr>
-                    <tr>
-                        <td>Daisy Alexander</td>
-                        <td>Chemistry</td>
-                        <td>28</td>
-                        <td>Female</td>
-                        <td>Vietnam</td>
-                    </tr>
-                    <tr>
-                        <td>Julia Bradley</td>
-                        <td>Math</td>
-                        <td>26</td>
-                        <td>Female</td>
-                        <td>USA</td>
-                    </tr>
-                    <tr>
-                        <td>Rita Hart</td>
-                        <td>Art</td>
-                        <td>41</td>
-                        <td>Female</td>
-                        <td>Ireland</td>
-                    </tr>
-                    <tr>
-                        <td>Liubomyr Segin</td>
-                        <td>Ukranian language</td>
-                        <td>50</td>
-                        <td>Male</td>
-                        <td>Ukraine</td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Speciality</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Nationality</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
                 </table>
             </div>
             <div class="table-pages">
@@ -300,99 +222,180 @@
                 </div>
             </footer>
         </div>
-        <!-- <div class="blur-container">
-      <div class="add-teacher-popup">
-         <header class="upper-menu">
-            <h1>Add Teacher</h1>
-            <button type="button" class="cross-button"><i class="fa fa-times"></i></button>
-         </header>
-         <form class="teacher-data-form">
-            <label>Name</label>
-            <input type="text" id="teacher-name" name="teacher-name" placeholder="Enter name" minlength="1" maxlength="30" size="30" />
-            <label>Speciality</label>
-            <select name="subject" id="subject">
-               <option value="1">Mathematics</option>
-               <option value="2">English</option>
-               <option value="3">Literature</option>
-               <option value="4">Science</option>
-               <option value="5">Music</option>
-            </select>
-            <fieldset class="personal-data">
-               <div>
-               <label class="country-data">Country</label>
-               <select name="country" id="country">
-                  <option value="1">Ukraine</option>
-                  <option value="2">USA</option>
-                  <option value="3">Germany</option>
-                  <option value="4">Uganda</option>
-               </select>
+        <div
+            class="blur-container"
+            id="add-teacher-popup"
+            style="display: none"
+        >
+            <div class="add-teacher-popup">
+                <header class="upper-menu">
+                    <h1>Add Teacher</h1>
+                    <button type="button" class="cross-button">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </header>
+                <form class="teacher-data-form">
+                    <label>Name</label>
+                    <input
+                        type="text"
+                        id="teacher-name"
+                        name="teacher-name"
+                        placeholder="Enter name"
+                        minlength="1"
+                        maxlength="30"
+                        size="30"
+                    />
+                    <label id="subject-label">Speciality</label>
+                    <select name="subject" id="subject">
+                        <option value="1">Mathematics</option>
+                        <option value="2">English</option>
+                        <option value="3">Literature</option>
+                        <option value="4">Science</option>
+                        <option value="5">Music</option>
+                    </select>
+                    <fieldset class="personal-data">
+                        <div>
+                            <label class="country-data">Country</label>
+                            <select name="country" id="country">
+                                <option value="1">Ukraine</option>
+                                <option value="2">United States</option>
+                                <option value="3">Germany</option>
+                                <option value="4">Uganda</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>City</label>
+                            <input
+                                type="text"
+                                id="teacher-city"
+                                name="teacher-city"
+                                minlength="1"
+                                maxlength="30"
+                            />
+                        </div>
+                        <div>
+                            <label>Email</label>
+                            <input type="email" id="email" name="email" />
+                        </div>
+                        <div>
+                            <label>Phone</label>
+                            <input
+                                type="tel"
+                                id="phone-number"
+                                name="phone-number"
+                            />
+                        </div>
+                        <div>
+                            <label>Date of birth</label>
+                            <input
+                                type="date"
+                                id="birth-date"
+                                name="birth-date"
+                            />
+                        </div>
+                    </fieldset>
+                    <fieldset class="sex-container">
+                        <label>Sex</label>
+                        <div class="sex-options">
+                            <label for="scales" class="teacher-sex">Male</label>
+                            <input
+                                type="radio"
+                                id="male"
+                                class="teacher-sex"
+                                name="gender"
+                                unchecked
+                            />
+                            <label for="scales" class="teacher-sex"
+                                >Female</label
+                            >
+                            <input
+                                type="radio"
+                                id="female"
+                                class="teacher-sex"
+                                name="gender"
+                                unchecked
+                            />
+                        </div>
+                    </fieldset>
+                    <div class="background-color">
+                        <label>Background color</label>
+                        <input
+                            type="color"
+                            id="background-color"
+                            name="background-color"
+                        />
+                    </div>
+                    <div class="notes">
+                        <label>Notes (optional)</label>
+                        <textarea name="notes" id="notes"></textarea>
+                    </div>
+                    <button type="submit" class="add-btn">Add</button>
+                </form>
             </div>
-            <div>
-               <label>City</label>
-               <input type="text" id="teacher-city" name="teacher-city" minlength="1" maxlength="30"/>
-            </div>
-            <div>
-               <label>Email</label>
-               <input type="email" id="email" name="email" />
-            </div>
-            <div>
-               <label>Phone</label>
-               <input type="tel" id="phone-number" name="phone-number" />
-            </div>
-            <div>
-               <label>Date of birth</label>
-               <input type="date" id="birth-date" name="birth-date" />
-            </div>
-            </fieldset>
-            <fieldset class="sex-container">
-            <label>Sex</label>
-            <div class="sex-options">
-            <label for="scales" class="teacher-sex">Male</label>
-            <input type="radio" id="male" class="teacher-sex" name="male" unchecked />
-            <label for="scales" class="teacher-sex">Female</label>
-            <input type="radio" id="female" class="teacher-sex" name="female" unchecked />
-         </div>
-         </fieldset>
-         <div class="background-color">
-            <label>Background color</label>
-            <input type="color" />
-         </div>
-         <div class="notes">
-            <label>Notes (optional)</label>
-            <textarea name="notes" id="notes"></textarea>
-         </div>
-            <button type="submit" class="add-btn">Add</button>
-         </form>
-      </div>
-   </div> -->
+        </div>
 
-        <!-- <div class="blur-container">
-      <div class="teacher-info-popup">
-         <header class="upper-menu">
-            <h1>Teacher Info</h1>
-            <button type="button" class="cross-button"><i class="fa fa-times"></i></button>
-         </header>
-         <div class="info">
-            <div class="main-frame">
-               <div class="popup-img-container">
-            <img src="/src/images/Segin.png" class="popup-photo" alt="Teacher's photo" />
-         </div>
-            <ul class="info-list">
-               <li><h2 class="popup-name">Liubomyr Segin</h2></li>
-               <li><label class="popup-subject">Ukrainian language</label></li>
-               <li><label class="popup-city">Kyiv, Ukraine</label></li>
-               <li><label class="popup-age-sex">50,Male</label></li>
-               <li><a href="mailto:liubomirchyk@ukr.net" class="popup-email">liubomirchyk@ukr.net</a></li>
-               <li><label class="popup-number">+(380)96-499-3252</label></li>
-            </ul>
-            <div class="lorem-container">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius nobis maiores alias ab distinctio magni numquam autem aliquid nostrum corporis officiis quas cupiditate explicabo, minima error iusto eos adipisci enim!</p>
-            <a href="" class="toggle-map">toggle map</a>
-         </div>
-         </div>
-         </div>
-      </div>
-   </div> -->
+        <div
+            class="blur-container"
+            id="teacher-info-popup"
+            style="display: none"
+        >
+            <div class="teacher-info-popup">
+                <header class="upper-menu">
+                    <h1>Teacher Info</h1>
+                    <button type="button" class="cross-button">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </header>
+                <div class="info">
+                    <div class="main-frame">
+                        <div class="popup-img-container">
+                            <img
+                                src="/images/Segin.png"
+                                class="popup-photo"
+                                alt="Teacher's photo"
+                            />
+                        </div>
+                        <ul class="info-list">
+                            <li><h2 class="popup-name">Liubomyr Segin</h2></li>
+                            <li>
+                                <label class="popup-subject"
+                                    >Ukrainian language</label
+                                >
+                            </li>
+                            <li>
+                                <label class="popup-city">Kyiv, Ukraine</label>
+                            </li>
+                            <li>
+                                <label class="popup-age-sex">50,Male</label>
+                            </li>
+                            <li>
+                                <a
+                                    href="mailto:liubomirchyk@ukr.net"
+                                    class="popup-email"
+                                    >liubomirchyk@ukr.net</a
+                                >
+                            </li>
+                            <li>
+                                <label class="popup-number"
+                                    >+(380)96-499-3252</label
+                                >
+                            </li>
+                            <div id="favourite-star"></div>
+                        </ul>
+                        <div class="lorem-container">
+                            <p>
+                                Lorem ipsum dolor sit amet consectetur
+                                adipisicing elit. Eius nobis maiores alias ab
+                                distinctio magni numquam autem aliquid nostrum
+                                corporis officiis quas cupiditate explicabo,
+                                minima error iusto eos adipisci enim!
+                            </p>
+                            <a href="" class="toggle-map">toggle map</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script type="module" src="./js/ts/app.js"></script>
     </body>
 </html>

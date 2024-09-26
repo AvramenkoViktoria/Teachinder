@@ -44,7 +44,7 @@ body {
 }
 
 .logo:hover {
-    content: url('teachinder-hover.jpg');
+    content: url('/css/images/teachinder-hover.jpg');
 }
 
 .search-form {
@@ -185,11 +185,11 @@ select {
 }
 
 .teacher-profile:hover .profile-pic-container {
-    border: 3px solid #ce4f3e;
+    border: 3px solid #000000 !important;
 }
 
 .teacher-profile:hover .teacher-initials {
-    color: #ce4f3e;
+    color: #000000 !important;
 }
 
 .profile-pic-container {
@@ -230,7 +230,7 @@ select {
     width: 40px;
     height: 40px;
     content: '';
-    background-image: url('star.png');
+    background-image: url('/css/images/star.png');
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -404,6 +404,10 @@ p {
     color: var(--orange-font-clr);
 }
 
+.error-label {
+    margin: 0px;
+}
+
 /* ====== Add teacher popup ====== */
 
 .add-teacher-popup {
@@ -429,7 +433,15 @@ p {
 #subject {
     width: 100%;
     height: 30px;
+}
+
+#subject {
+    margin-top: 3px;
     margin-bottom: 20px;
+}
+
+#subject-label {
+    margin-top: 20px;
 }
 
 .personal-data {
@@ -596,15 +608,15 @@ p {
     margin-top: 10px;
 }
 
-.info-list::after {
+#favourite-star {
     position: absolute;
     right: -4px;
     top: -4px;
-    content: url('/src/images/empty-star-for-popup.png');
+    content: url('/css/images/empty-star-for-popup.png');
 }
 
-.info-list:hover::after {
-    content: url('/src/images/full-star-for-popup.png');
+#favourite-star:hover {
+    content: url('/css/images/full-star-for-popup.png');
 }
 
 .lorem-container {

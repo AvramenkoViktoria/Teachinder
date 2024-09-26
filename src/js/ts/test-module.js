@@ -1,8 +1,37 @@
 export default {
     hello: 'world',
     userList: uniteTwoDataLists(),
+    filterUsers: filterUsers,
+    sortUsers: sortUsers,
+    findUsers: findUsers,
+    validatePhoneNumber: validatePhoneNumber,
+    validateEmail: validEmailFormat,
+    validateColor: validateColorFormat,
+    getFirstWord: getFirstWord,
+    calculateAge: calculateAge,
 };
 import { randomUserMock, additionalUsers } from './FE4U-Lab2-mock.js';
+const countriesByRegion = {
+    africa: [],
+    asia: ['Iran'],
+    'central america': [],
+    europe: [
+        'Germany',
+        'Ireland',
+        'Finland',
+        'Turkey',
+        'Switzerland',
+        'Spain',
+        'Norway',
+        'Denmark',
+        'France',
+        'Netherlands',
+    ],
+    'middle east': [],
+    'north america': ['United States', 'Canada'],
+    'south america': [],
+    australia: ['Australia'],
+};
 function formatTeachersData() {
     const outputUsers = randomUserMock.map((user) => ({
         gender: user.gender,
@@ -18,10 +47,14 @@ function formatTeachersData() {
         b_date: user.dob.date,
         age: user.dob.age,
         phone: user.phone,
-        picture_large: '/images/Segin.png',
+        picture_large: setRandomPic(),
         picture_thumbnail: user.picture.thumbnail,
     }));
     return outputUsers;
+}
+function setRandomPic() {
+    const isPic = Math.random() < 0.5;
+    return isPic ? '/images/Segin.png' : '';
 }
 export function createRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -79,7 +112,7 @@ export function uniteTwoDataLists() {
     });
     return unitedUsers;
 }
-function validatePhoneNumber(phoneNumber, country) {
+export function validatePhoneNumber(phoneNumber, country) {
     const regexes = {
         Germany: /^\+49\d{10,11}$/,
         Ireland: /^\+353\d{7,10}$/,
@@ -106,9 +139,18 @@ function validatePhoneNumber(phoneNumber, country) {
         return false;
     }
 }
-function validEmailFormat(input) {
+export function validEmailFormat(input) {
     const regex = /^[^\s@]+@[^\s@]+$/;
     return regex.test(input);
+}
+export function validateColorFormat(color) {
+    const regex = /^#[0-9A-F]{6}$/i;
+    return regex.test(color);
+}
+export function getFirstWord(input) {
+    const trimmedInput = input.trim();
+    const words = trimmedInput.split(/\s+/);
+    return words[0] || '';
 }
 function validateProfiles(users) {
     const wrongProfiles = [];
@@ -150,7 +192,17 @@ function validateProfiles(users) {
     console.log(wrongProfiles);
     return correctProfiles;
 }
-// validateProfiles(uniteTwoDataLists());
+export function calculateAge(birthDate) {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDifference = today.getMonth() - birth.getMonth();
+    const dayDifference = today.getDate() - birth.getDate();
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+        age--;
+    }
+    return age;
+}
 function parseAgeFilter(ageFilter) {
     const rangeRegex = /^(>|>=|<|<=)?\s*(\d+)\s*(and)?\s*(>|>=|<|<=)?\s*(\d+)?$/;
     const match = ageFilter.match(rangeRegex);
@@ -194,12 +246,21 @@ function parseAgeFilter(ageFilter) {
     };
     return (age) => lowerBoundCheck(age) && upperBoundCheck(age);
 }
-function filterUsers(users, filters) {
+function isCountryInRegion(country, region) {
+    country = country.toLowerCase();
+    region = region.toLowerCase();
+    const countries = countriesByRegion[region];
+    return countries
+        ? countries.map((c) => c.toLowerCase()).includes(country)
+        : false;
+}
+export function filterUsers(users, filters) {
+    console.log(users);
     return users.filter((user) => {
         return Object.entries(filters).every(([key, filterValue]) => {
             if (filterValue === undefined || filterValue === null)
                 return true;
-            if (key === 'age' && typeof filterValue === 'string') {
+            if (key === 'age') {
                 try {
                     const ageFilterFunc = parseAgeFilter(filterValue);
                     return ageFilterFunc(user.age);
@@ -209,17 +270,29 @@ function filterUsers(users, filters) {
                     return false;
                 }
             }
+            else if (key === 'region') {
+                if (user.full_name === 'Nora Shevchenko') {
+                    console.log('Nora is in US: ' +
+                        isCountryInRegion(user.country, filterValue) +
+                        ' / ' +
+                        filterValue);
+                }
+                return isCountryInRegion(user.country, filterValue);
+            }
+            else if (key === 'photoRequired') {
+                return filterValue == true ? user.picture_large !== '' : true;
+            }
+            else if (key === 'favorite') {
+                return filterValue
+                    ? user[key] === filterValue
+                    : true;
+            }
             const userValue = user[key];
             return userValue === filterValue;
         });
     });
 }
-// const filters = {
-//     age: '>10 <80',
-//     country: 'Germany',
-// };
-// console.log(filterUsers(uniteTwoDataLists(), filters));
-function sortUsers(users, param, ascending) {
+export function sortUsers(users, param, ascending) {
     return users.sort((a, b) => {
         let fieldA = a[param];
         let fieldB = b[param];
@@ -248,13 +321,7 @@ function sortUsers(users, param, ascending) {
                 : -1;
     });
 }
-// const sortedUsers = sortUsers(uniteTwoDataLists(), 'b_date', true);
-// console.log(sortedUsers);
-// const sortedUsers = sortUsers(uniteTwoDataLists(), 'age', false);
-// console.log(sortedUsers);
-// const sortedUsers = sortUsers(uniteTwoDataLists(), 'b_day', true);
-// console.log(sortedUsers);
-function findUsers(users, param) {
+export function findUsers(users, param) {
     return users.filter((user) => {
         if (typeof param == 'string' &&
             (param.startsWith('>') || param.startsWith('<'))) {
@@ -267,17 +334,25 @@ function findUsers(users, param) {
                 throw error;
             }
         }
+        else if (typeof param === 'string') {
+            const searchFields = [
+                'full_name',
+                'course',
+                'country',
+                'gender',
+                'note',
+            ];
+            return searchFields.some((field) => {
+                const value = user[field];
+                return (typeof value === 'string' &&
+                    value.toLowerCase().includes(param.toLowerCase()));
+            });
+        }
         else {
             return Object.values(user).some((value) => value === param);
         }
     });
 }
-// const teachers: User[] = findUsers(uniteTwoDataLists(), 'Iran');
-// console.log(teachers);
-// const foundUsers = findUsers(uniteTwoDataLists(), '>64 <66');
-// console.log(foundUsers);
-// const foundUsers = findUsers(uniteTwoDataLists(), '><64 <66');
-// console.log(foundUsers);
 function calculatePercentage(users, foundUsers) {
     return (foundUsers.length / users.length) * 100;
 }
