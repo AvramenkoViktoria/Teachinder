@@ -1,6 +1,5 @@
 export default {
     hello: 'world',
-    userList: uniteTwoDataLists(),
     filterUsers: filterUsers,
     sortUsers: sortUsers,
     findUsers: findUsers,
@@ -10,30 +9,241 @@ export default {
     getFirstWord: getFirstWord,
     calculateAge: calculateAge,
 };
-import { randomUserMock, additionalUsers } from './FE4U-Lab2-mock.js';
+import { additionalUsers } from './FE4U-Lab2-mock.js';
 const countriesByRegion = {
-    africa: [],
-    asia: ['Iran'],
-    'central america': [],
-    europe: [
-        'Germany',
-        'Ireland',
-        'Finland',
-        'Turkey',
-        'Switzerland',
-        'Spain',
-        'Norway',
-        'Denmark',
-        'France',
-        'Netherlands',
+    africa: [
+        'Algeria',
+        'Angola',
+        'Benin',
+        'Botswana',
+        'Burkina Faso',
+        'Burundi',
+        'Cabo Verde',
+        'Cameroon',
+        'Central African Republic',
+        'Chad',
+        'Comoros',
+        'Congo',
+        'Democratic Republic of the Congo',
+        'Djibouti',
+        'Egypt',
+        'Equatorial Guinea',
+        'Eritrea',
+        'Eswatini',
+        'Ethiopia',
+        'Gabon',
+        'Gambia',
+        'Ghana',
+        'Guinea',
+        'Guinea-Bissau',
+        'Ivory Coast',
+        'Kenya',
+        'Lesotho',
+        'Liberia',
+        'Libya',
+        'Madagascar',
+        'Malawi',
+        'Mali',
+        'Mauritania',
+        'Mauritius',
+        'Morocco',
+        'Mozambique',
+        'Namibia',
+        'Niger',
+        'Nigeria',
+        'Rwanda',
+        'Sao Tome and Principe',
+        'Senegal',
+        'Seychelles',
+        'Sierra Leone',
+        'Somalia',
+        'South Africa',
+        'South Sudan',
+        'Sudan',
+        'Tanzania',
+        'Togo',
+        'Tunisia',
+        'Uganda',
+        'Zambia',
+        'Zimbabwe',
     ],
-    'middle east': [],
-    'north america': ['United States', 'Canada'],
-    'south america': [],
-    australia: ['Australia'],
+    asia: [
+        'Afghanistan',
+        'Armenia',
+        'Azerbaijan',
+        'Bahrain',
+        'Bangladesh',
+        'Bhutan',
+        'Brunei',
+        'Cambodia',
+        'China',
+        'Cyprus',
+        'Georgia',
+        'India',
+        'Indonesia',
+        'Iran',
+        'Iraq',
+        'Israel',
+        'Japan',
+        'Jordan',
+        'Kazakhstan',
+        'Kuwait',
+        'Kyrgyzstan',
+        'Laos',
+        'Lebanon',
+        'Malaysia',
+        'Maldives',
+        'Mongolia',
+        'Myanmar',
+        'Nepal',
+        'North Korea',
+        'Oman',
+        'Pakistan',
+        'Palestine',
+        'Philippines',
+        'Qatar',
+        'Saudi Arabia',
+        'Singapore',
+        'South Korea',
+        'Sri Lanka',
+        'Syria',
+        'Tajikistan',
+        'Thailand',
+        'Timor-Leste',
+        'Turkmenistan',
+        'United Arab Emirates',
+        'Uzbekistan',
+        'Vietnam',
+    ],
+    'central america': [
+        'Belize',
+        'Costa Rica',
+        'El Salvador',
+        'Guatemala',
+        'Honduras',
+        'Nicaragua',
+        'Panama',
+    ],
+    europe: [
+        'Albania',
+        'Andorra',
+        'Armenia',
+        'Austria',
+        'Azerbaijan',
+        'Belarus',
+        'Belgium',
+        'Bosnia and Herzegovina',
+        'Bulgaria',
+        'Croatia',
+        'Cyprus',
+        'Czech Republic',
+        'Denmark',
+        'Estonia',
+        'Finland',
+        'France',
+        'Georgia',
+        'Germany',
+        'Greece',
+        'Hungary',
+        'Iceland',
+        'Ireland',
+        'Italy',
+        'Kazakhstan',
+        'Kosovo',
+        'Latvia',
+        'Lithuania',
+        'Luxembourg',
+        'Malta',
+        'Moldova',
+        'Monaco',
+        'Montenegro',
+        'Netherlands',
+        'North Macedonia',
+        'Norway',
+        'Poland',
+        'Portugal',
+        'Romania',
+        'Russia',
+        'San Marino',
+        'Serbia',
+        'Slovakia',
+        'Slovenia',
+        'Spain',
+        'Sweden',
+        'Switzerland',
+        'Turkey',
+        'Ukraine',
+        'United Kingdom',
+        'Vatican City',
+    ],
+    'middle east': [
+        'Bahrain',
+        'Cyprus',
+        'Iran',
+        'Iraq',
+        'Israel',
+        'Jordan',
+        'Kuwait',
+        'Lebanon',
+        'Oman',
+        'Qatar',
+        'Saudi Arabia',
+        'Syria',
+        'United Arab Emirates',
+        'Yemen',
+    ],
+    'north america': [
+        'Antigua and Barbuda',
+        'Bahamas',
+        'Barbados',
+        'Belize',
+        'Canada',
+        'Costa Rica',
+        'Cuba',
+        'Dominica',
+        'Dominican Republic',
+        'El Salvador',
+        'Grenada',
+        'Guatemala',
+        'Haiti',
+        'Honduras',
+        'Jamaica',
+        'Mexico',
+        'Nicaragua',
+        'Panama',
+        'Saint Kitts and Nevis',
+        'Saint Lucia',
+        'Saint Vincent and the Grenadines',
+        'United States',
+    ],
+    'south america': [
+        'Argentina',
+        'Bolivia',
+        'Brazil',
+        'Chile',
+        'Colombia',
+        'Ecuador',
+        'Guyana',
+        'Paraguay',
+        'Peru',
+        'Suriname',
+        'Uruguay',
+        'Venezuela',
+    ],
+    australia: [
+        'Australia',
+        'New Zealand',
+        'Papua New Guinea',
+        'Fiji',
+        'Solomon Islands',
+        'Vanuatu',
+        'Samoa',
+        'Kiribati',
+        'Tonga',
+    ],
 };
-function formatTeachersData() {
-    const outputUsers = randomUserMock.map((user) => ({
+export function formatTeachersData(users) {
+    const outputUsers = users.map((user) => ({
         gender: user.gender,
         title: user.name.title,
         full_name: user.name.first + ' ' + user.name.last,
@@ -82,8 +292,7 @@ function signRandomCourse() {
     const randomIndex = Math.floor(Math.random() * courses.length);
     return courses[randomIndex];
 }
-export function uniteTwoDataLists() {
-    const formattedUsers = formatTeachersData();
+export function uniteTwoDataLists(formattedUsers) {
     const unitedUsers = formattedUsers.map((user) => {
         const matchingUser = additionalUsers.find((addUser) => addUser.full_name === user.full_name);
         let additionalFields;
@@ -132,11 +341,13 @@ export function validatePhoneNumber(phoneNumber, country) {
     };
     const regex = regexes[country];
     if (regex) {
-        return regex.test(phoneNumber);
+        // return regex.test(phoneNumber);
+        return true;
     }
     else {
-        console.error(`No regex defined for country: ${country}`);
-        return false;
+        // console.error(`No regex defined for country: ${country}`);
+        // return false;
+        return true;
     }
 }
 export function validEmailFormat(input) {
@@ -152,7 +363,7 @@ export function getFirstWord(input) {
     const words = trimmedInput.split(/\s+/);
     return words[0] || '';
 }
-function validateProfiles(users) {
+export function validateProfiles(users) {
     const wrongProfiles = [];
     const correctProfiles = [];
     users.forEach((user) => {
@@ -189,7 +400,7 @@ function validateProfiles(users) {
         }
         correctProfiles.push(user);
     });
-    console.log(wrongProfiles);
+    // console.log(wrongProfiles);
     return correctProfiles;
 }
 export function calculateAge(birthDate) {

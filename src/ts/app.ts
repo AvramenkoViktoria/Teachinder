@@ -1,7 +1,26 @@
 import testModules, {calculateAge, sortUsers} from './test-module.js';
 import {User} from './user-interfaces.js';
 import testModule, {filterFields} from './test-module.js';
-import {getFirstWord} from './test-module';
+import {getFirstWord} from './test-module.js';
+import {users, sendUsersToServer, getUsersFromServer} from './http.js';
+
+let firstUserInList = 0;
+let lastDisplayOption = 'search'; // May be search or filter
+let lastSearchInput = '';
+
+export function showLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.display = 'flex';
+    }
+}
+
+export function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.display = 'none';
+    }
+}
 
 function createTeacherProfile(teacher: User): HTMLElement {
     const teacherProfile = document.createElement('div');
@@ -61,7 +80,6 @@ profileContainers.forEach((container) => {
     container.addEventListener('click', () => {
         const teacher = findTeacherByProfile(container as HTMLElement);
         if (teacher) {
-            console.log('Yippie');
             showInfoPopup(teacher);
         } else {
             console.error('Teacher not found.');
@@ -81,7 +99,7 @@ function findTeacherByProfile(container: HTMLElement): User | null {
     const photoSrc =
         photoElement?.src.replace('http://localhost:3001', '') || null;
 
-    for (const teacher of testModule.userList) {
+    for (const teacher of users) {
         const isNameMatch = teacher.full_name === name;
         const isCourseMatch = teacher.course === course;
         const isCountryMatch = teacher.country === country;
@@ -179,7 +197,7 @@ function showInfoPopup(teacher: User) {
 }
 
 function findTeacherAnMakeHimFav(user: User): void {
-    for (const teacher of testModule.userList) {
+    for (const teacher of users) {
         const isNameMatch = teacher.full_name === user.full_name;
         const isCourseMatch = teacher.course === user.course;
         const isCountryMatch = teacher.country === user.country;
@@ -242,7 +260,6 @@ const photoCheckbox = document.querySelector("input[name='photo-required']");
 const favoriteCheckbox = document.querySelector("input[name='only-favorites']");
 
 function updateFilters(users: User[]): User[] {
-    console.log(users);
     const filters: filterFields = {
         age: changeAgeRangeString(
             (ageSelect as HTMLSelectElement).selectedOptions[0].text,
@@ -275,27 +292,30 @@ function clearTeachersList(): void {
     teachersList.innerHTML = '';
 }
 
+// REDO*
 function updateProfiles(): void {
     clearTeachersList();
-    const filteredTeachers: User[] = updateFilters(testModule.userList);
-    console.log(filteredTeachers);
-    addTeachersToList(filteredTeachers);
+    clearTableBody();
+    const teachersToDisplay = getTenUsers(firstUserInList);
+    addTeachersToList(teachersToDisplay);
+    createTable(teachersToDisplay);
 }
 
 [ageSelect, regionSelect, sexSelect, photoCheckbox, favoriteCheckbox].forEach(
     (el) => {
-        el?.addEventListener('change', () => updateProfiles());
+        el?.addEventListener('change', () => {
+            firstUserInList = 0;
+            lastDisplayOption = 'filter';
+            updateProfiles();
+        });
     },
 );
-
-let firstInTable: number = 0;
 
 function createTable(users: User[]) {
     const table = document.querySelector(
         '.teachers-table tbody',
     ) as HTMLTableElement;
-    let last = firstInTable + 20;
-    for (let i = firstInTable; i < last; i++) {
+    for (let i = 0; i < users.length; i++) {
         const user = users[i];
         const row = table.insertRow();
 
@@ -314,15 +334,32 @@ function createTable(users: User[]) {
         const nationalityCell = row.insertCell();
         nationalityCell.textContent = user.country;
     }
-    firstInTable = last;
 }
 
 function clearTableBody() {
     const tableBody = document.querySelector('.teachers-table tbody');
     tableBody.innerHTML = '';
-    firstInTable = 0;
 }
 
+function getTenUsers(index: number): User[] {
+    if (lastDisplayOption === 'search') {
+        const searchedUsers = testModule.findUsers(users, lastSearchInput);
+        if (index >= searchedUsers.length) {
+            return [];
+        }
+        return searchedUsers.slice(index, index + 10);
+    } else if (lastDisplayOption === 'filter') {
+        const filteredUsers = updateFilters(users);
+        if (index >= filteredUsers.length) {
+            return [];
+        }
+        return filteredUsers.slice(index, index + 10);
+    } else {
+        console.error('Wrong lastDisplayOption value!');
+    }
+}
+
+// REDO
 const nameHeader: HTMLTableCellElement = document.querySelector(
     'thead th:nth-child(1)',
 ) as HTMLTableCellElement;
@@ -345,27 +382,37 @@ const nationalityHeader: HTMLTableCellElement = document.querySelector(
 
 nameHeader.addEventListener('click', () => {
     clearTableBody();
-    createTable(testModules.sortUsers(testModules.userList, 'full_name', true));
+    createTable(
+        testModules.sortUsers(getTenUsers(firstUserInList), 'full_name', true),
+    );
 });
 
 specialityHeader.addEventListener('click', () => {
     clearTableBody();
-    createTable(testModules.sortUsers(testModules.userList, 'course', true));
+    createTable(
+        testModules.sortUsers(getTenUsers(firstUserInList), 'course', true),
+    );
 });
 
 ageHeader.addEventListener('click', () => {
     clearTableBody();
-    createTable(testModules.sortUsers(testModules.userList, 'age', true));
+    createTable(
+        testModules.sortUsers(getTenUsers(firstUserInList), 'age', true),
+    );
 });
 
 genderHeader.addEventListener('click', () => {
     clearTableBody();
-    createTable(testModules.sortUsers(testModules.userList, 'gender', true));
+    createTable(
+        testModules.sortUsers(getTenUsers(firstUserInList), 'gender', true),
+    );
 });
 
 nationalityHeader.addEventListener('click', () => {
     clearTableBody();
-    createTable(testModules.sortUsers(testModules.userList, 'country', true));
+    createTable(
+        testModules.sortUsers(getTenUsers(firstUserInList), 'country', true),
+    );
 });
 
 function searchUsers(): void {
@@ -373,11 +420,15 @@ function searchUsers(): void {
         '#search-info',
     ) as HTMLInputElement;
     const inputValue = inputField.value;
-    console.log(inputValue);
-    const foundUsers = testModule.findUsers(testModule.userList, inputValue);
-    console.log(foundUsers);
+    const foundUsers = testModule.findUsers(users, inputValue);
+    const teachersToDisplay =
+        foundUsers.length >= 10 ? foundUsers.slice(0, 10) : foundUsers;
     clearTeachersList();
-    addTeachersToList(foundUsers);
+    clearTableBody();
+    addTeachersToList(teachersToDisplay);
+    createTable(teachersToDisplay);
+    lastDisplayOption = 'search';
+    lastSearchInput = inputValue;
 }
 
 const searchButton = document.querySelector(
@@ -400,13 +451,6 @@ addTeacherBtns.forEach((btn) => {
         blurContainer.style.display = 'flex';
     });
 });
-
-function addTeacher(teacher: User): void {
-    testModule.userList.push(teacher);
-    updateProfiles();
-    clearTableBody();
-    createTable(testModule.userList);
-}
 
 function getTeacherFromPopup(): User {
     // Get field values from the form
@@ -586,15 +630,22 @@ function removeFirstWord(input: string): string {
     return words.slice(1).join(' ');
 }
 
+// REDO
 function addTeacherToWebsite(): boolean {
     const teacher = getTeacherFromPopup();
     if (teacher !== null) {
-        testModule.userList.push(teacher);
-        console.log(testModule.userList);
+        sendUsersToServer([teacher]);
+        getUsersFromServer('http://localhost:3001/api/items', users);
+        firstUserInList = 0;
+        lastDisplayOption = 'filter';
         updateProfiles();
         clearTableBody();
         createTable(
-            testModules.sortUsers(testModules.userList, 'full_name', true),
+            testModules.sortUsers(
+                getTenUsers(firstUserInList),
+                'full_name',
+                true,
+            ),
         );
         return true;
     } else {
@@ -677,5 +728,32 @@ closeButton?.addEventListener('click', () => {
     blurContainer.style.display = 'none';
 });
 
+const prevButton = document.querySelector('.prev') as HTMLButtonElement;
+const nextButton = document.querySelector('.next') as HTMLButtonElement;
+
+prevButton.addEventListener('click', () => {
+    if (firstUserInList > 0) {
+        firstUserInList -= 10;
+        updateProfiles();
+    }
+});
+
+nextButton.addEventListener('click', () => {
+    const lastUserArray = getLastUserArray();
+    if (firstUserInList + 10 < lastUserArray.length) {
+        firstUserInList += 10;
+        updateProfiles();
+    }
+});
+
+function getLastUserArray(): User[] {
+    if (lastDisplayOption === 'search') {
+        return testModule.findUsers(users, lastSearchInput);
+    } else if (lastDisplayOption === 'filter') {
+        return updateFilters(users);
+    } else {
+        console.error('Wrong lastDisplayOption value!');
+    }
+}
+
 updateProfiles();
-createTable(testModules.sortUsers(testModules.userList, 'full_name', true));

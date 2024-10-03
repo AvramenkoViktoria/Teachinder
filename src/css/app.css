@@ -172,7 +172,7 @@ select {
     margin-left: var(--main-margin);
     margin-right: var(--main-margin);
     margin-top: 50px;
-    margin-bottom: 70px;
+    margin-bottom: 10px;
 }
 
 .teacher-profile {
@@ -250,11 +250,38 @@ select {
     font-size: 11px;
 }
 
+.page-buttons {
+    margin-top: 20px;
+    margin-bottom: 70px;
+    margin-left: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.prev,
+.next {
+    font-size: 14px;
+    background: none;
+    border: 1px solid #6eb9c7;
+    color: #6eb9c7;
+}
+
+.prev:hover,
+.next:hover {
+    background-color: #6eb9c7;
+    color: #fff;
+    border: 1px solid #000000;
+}
+
 .table-container {
     display: block;
     margin-left: var(--main-margin);
     margin-right: var(--main-margin);
     overflow-x: auto;
+    margin-bottom: 50px;
 }
 
 .teachers-table {
@@ -300,19 +327,6 @@ tr:nth-child(odd) {
 
 tr:first-child {
     background-color: #fff;
-}
-
-.table-pages {
-    margin-left: var(--main-margin);
-    margin-top: 15px;
-    margin-bottom: 50px;
-    display: flex;
-}
-
-.table-pages button {
-    background: none;
-    border: none;
-    color: #6eb9c7;
 }
 
 .left-arrow-button,
@@ -406,6 +420,64 @@ p {
 
 .error-label {
     margin: 0px;
+}
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.759);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 10px solid #fff;
+    border-radius: 50%;
+    position: relative;
+    transform: rotate(45deg);
+    box-sizing: border-box;
+}
+
+.loader::before {
+    content: '';
+    position: absolute;
+    box-sizing: border-box;
+    inset: -10px;
+    border-radius: 50%;
+    border: 10px solid #ff3d00;
+    animation: prixClipFix 2s infinite linear;
+}
+
+@keyframes prixClipFix {
+    0% {
+        clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0);
+    }
+    25% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0);
+    }
+    50% {
+        clip-path: polygon(
+            50% 50%,
+            0 0,
+            100% 0,
+            100% 100%,
+            100% 100%,
+            100% 100%
+        );
+    }
+    75% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%);
+    }
+    100% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0);
+    }
 }
 
 /* ====== Add teacher popup ====== */

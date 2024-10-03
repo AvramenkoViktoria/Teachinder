@@ -16,6 +16,9 @@
     </head>
 
     <body itemscope itemtype="http://schema.org/WebPage">
+        <div id="loading-screen" style="display: none">
+            <span class="loader"></span>
+        </div>
         <div id="main-container">
             <header class="logo-header">
                 <img
@@ -104,6 +107,10 @@
                 </div>
             </form>
             <div class="teachers-list"></div>
+            <div class="page-buttons">
+                <button class="prev" type="button">Prev</button>
+                <button class="next" type="button">Next</button>
+            </div>
             <div class="section-name-cont">
                 <h3 class="section-name" id="statistics">Statistics</h3>
             </div>
@@ -120,13 +127,6 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-            </div>
-            <div class="table-pages">
-                <button type="button">1</button>
-                <button type="button">2</button>
-                <button type="button">3</button>
-                <label>...</label>
-                <button type="button">Last</button>
             </div>
             <div class="section-name-cont" id="favorites">
                 <h3 class="section-name">Favorites</h3>
