@@ -15,8 +15,7 @@ let items = [];
 app.post('/api/users', (req, res) => {
     const users = req.body;
     items.push(...users);
-    console.log('Пользователи успешно получены и сохранены:', users);
-    res.status(200).send('Пользователи успешно получены и сохранены');
+    res.status(200).send('Users were successfully received and saved');
 });
 
 app.get('/api/items', (req, res) => {

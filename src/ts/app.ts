@@ -22,11 +22,12 @@ export function hideLoadingScreen() {
     }
 }
 
-function createTeacherProfile(teacher: User): HTMLElement {
+function createTeacherProfile(teacher: User, favProfile: boolean): HTMLElement {
     const teacherProfile = document.createElement('div');
     teacherProfile.classList.add('teacher-profile');
 
     if (teacher.favorite) teacherProfile.classList.add('fav');
+    if (favProfile) teacherProfile.classList.add('favorite');
 
     const profilePicContainer = document.createElement('div');
     profilePicContainer.classList.add('profile-pic-container');
@@ -53,17 +54,23 @@ function createTeacherProfile(teacher: User): HTMLElement {
     subjectLabel.classList.add('subject');
     subjectLabel.textContent = teacher.course;
 
-    const countryLabel = document.createElement('label');
-    countryLabel.classList.add('country');
-    countryLabel.textContent = teacher.country;
+    let countryLabel = null;
+    if (!favProfile) {
+        countryLabel = document.createElement('label');
+        countryLabel.classList.add('country');
+        countryLabel.textContent = teacher.country;
+    }
 
     teacherProfile.appendChild(profilePicContainer);
     teacherProfile.appendChild(teacherNameLabel);
     teacherProfile.appendChild(subjectLabel);
-    teacherProfile.appendChild(countryLabel);
+    if (!favProfile) teacherProfile.appendChild(countryLabel);
 
     teacherProfile.addEventListener('click', () => {
-        const teacher = findTeacherByProfile(teacherProfile as HTMLElement);
+        const teacher = findTeacherByProfile(
+            teacherProfile as HTMLElement,
+            favProfile,
+        );
         if (teacher) {
             showInfoPopup(teacher);
         } else {
@@ -74,20 +81,23 @@ function createTeacherProfile(teacher: User): HTMLElement {
     return teacherProfile;
 }
 
-const profileContainers = document.querySelectorAll('.teacher-profile');
+// const profileContainers = document.querySelectorAll('.teacher-profile');
 
-profileContainers.forEach((container) => {
-    container.addEventListener('click', () => {
-        const teacher = findTeacherByProfile(container as HTMLElement);
-        if (teacher) {
-            showInfoPopup(teacher);
-        } else {
-            console.error('Teacher not found.');
-        }
-    });
-});
+// profileContainers.forEach((container) => {
+//     container.addEventListener('click', () => {
+//         const teacher = findTeacherByProfile(container as HTMLElement);
+//         if (teacher) {
+//             showInfoPopup(teacher);
+//         } else {
+//             console.error('Teacher not found.');
+//         }
+//     });
+// });
 
-function findTeacherByProfile(container: HTMLElement): User | null {
+function findTeacherByProfile(
+    container: HTMLElement,
+    favProfile: boolean,
+): User | null {
     const name = container.querySelector('.teacher-name')?.textContent;
     const course = container.querySelector('.subject')?.textContent;
     const country = container.querySelector('.country')?.textContent;
@@ -102,7 +112,12 @@ function findTeacherByProfile(container: HTMLElement): User | null {
     for (const teacher of users) {
         const isNameMatch = teacher.full_name === name;
         const isCourseMatch = teacher.course === course;
-        const isCountryMatch = teacher.country === country;
+        let isCountryMatch = null;
+        if (!favProfile) {
+            isCountryMatch = teacher.country === country;
+        } else {
+            isCountryMatch = true;
+        }
 
         const teacherPicture =
             teacher.picture_large?.replace('http://localhost:3001', '') || null;
@@ -120,7 +135,10 @@ function findTeacherByProfile(container: HTMLElement): User | null {
     return null;
 }
 
+let currentTeacher = null;
+
 function showInfoPopup(teacher: User) {
+    currentTeacher = teacher;
     const popupContainer = document.getElementById(
         'teacher-info-popup',
     ) as HTMLElement;
@@ -172,14 +190,6 @@ function showInfoPopup(teacher: User) {
 
     popupContainer.style.display = 'flex';
 
-    const closeButton = popupContainer.querySelector(
-        '.cross-button',
-    ) as HTMLButtonElement;
-    closeButton.addEventListener('click', () => {
-        popupContainer.style.display = 'none';
-        updateProfiles();
-    });
-
     const star = document.getElementById('favourite-star');
     if (teacher.favorite === true) {
         star.style.backgroundImage =
@@ -188,13 +198,25 @@ function showInfoPopup(teacher: User) {
         star.style.backgroundImage =
             'url("/css/images/empty-star-for-popup.png")';
     }
-
-    star.addEventListener('click', () => {
-        findTeacherAnMakeHimFav(teacher);
-        star.style.backgroundImage =
-            'url("/css/images/full-star-for-popup.png")';
-    });
 }
+
+const popupContainer = document.getElementById(
+    'teacher-info-popup',
+) as HTMLElement;
+const closeBtn = popupContainer.querySelector(
+    '.cross-button',
+) as HTMLButtonElement;
+closeBtn.addEventListener('click', () => {
+    popupContainer.style.display = 'none';
+    updateProfiles();
+    loadFavorites();
+});
+
+const star = document.getElementById('favourite-star');
+star.addEventListener('click', () => {
+    findTeacherAnMakeHimFav(currentTeacher);
+    star.style.backgroundImage = 'url("/css/images/full-star-for-popup.png")';
+});
 
 function findTeacherAnMakeHimFav(user: User): void {
     for (const teacher of users) {
@@ -205,18 +227,6 @@ function findTeacherAnMakeHimFav(user: User): void {
         const teacherPicture =
             teacher.picture_large?.replace('http://localhost:3001', '') || '';
         const isPhotoMatch = teacherPicture === user.picture_large;
-
-        if (teacher.full_name === 'Nora Shevchenko') {
-            console.log(
-                isNameMatch +
-                    ' ' +
-                    isPhotoMatch +
-                    ' ' +
-                    user.picture_large +
-                    ' ' +
-                    teacher.picture_large,
-            );
-        }
         if (isNameMatch && isCourseMatch && isCountryMatch && isPhotoMatch) {
             teacher.favorite = true;
         }
@@ -245,7 +255,7 @@ function addTeachersToList(teachers: User[]): void {
 
     if (container) {
         teachers.forEach((teacher) => {
-            const teacherProfile = createTeacherProfile(teacher);
+            const teacherProfile = createTeacherProfile(teacher, false);
             container.appendChild(teacherProfile);
         });
     } else {
@@ -292,7 +302,6 @@ function clearTeachersList(): void {
     teachersList.innerHTML = '';
 }
 
-// REDO*
 function updateProfiles(): void {
     clearTeachersList();
     clearTableBody();
@@ -647,6 +656,7 @@ function addTeacherToWebsite(): boolean {
                 true,
             ),
         );
+        loadFavorites();
         return true;
     } else {
         return false;
@@ -756,4 +766,56 @@ function getLastUserArray(): User[] {
     }
 }
 
+function clearFavorites() {
+    const favoritesList = document.querySelector('.favorites-list');
+    favoritesList.innerHTML = '';
+}
+
+let currentStartIndex = 0;
+
+function loadFavorites() {
+    const favorites = testModule.filterUsers(users, {favorite: true});
+    const favoritesList = document.querySelector('.favorites-list');
+
+    favoritesList.innerHTML = '';
+    const favoritesToShow = favorites.slice(
+        currentStartIndex,
+        currentStartIndex + 4,
+    );
+    favoritesToShow.forEach((teacher) => {
+        const profile = createTeacherProfile(teacher, true);
+        favoritesList.appendChild(profile);
+    });
+
+    updateArrowState(favorites.length);
+}
+
+function updateArrowState(totalFavorites) {
+    const leftArrow = document.querySelector(
+        '.left-arrow-button',
+    ) as HTMLButtonElement;
+    const rightArrow = document.querySelector(
+        '.right-arrow-button',
+    ) as HTMLButtonElement;
+
+    leftArrow.disabled = currentStartIndex === 0;
+    rightArrow.disabled = currentStartIndex + 4 >= totalFavorites;
+}
+
+document.querySelector('.left-arrow-button').addEventListener('click', () => {
+    if (currentStartIndex > 0) {
+        currentStartIndex -= 4;
+        loadFavorites();
+    }
+});
+
+document.querySelector('.right-arrow-button').addEventListener('click', () => {
+    const favorites = testModule.filterUsers(users, {favorite: true});
+    if (currentStartIndex + 4 < favorites.length) {
+        currentStartIndex += 4;
+        loadFavorites();
+    }
+});
+
 updateProfiles();
+loadFavorites();

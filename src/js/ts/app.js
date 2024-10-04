@@ -16,11 +16,13 @@ export function hideLoadingScreen() {
         loadingScreen.style.display = 'none';
     }
 }
-function createTeacherProfile(teacher) {
+function createTeacherProfile(teacher, favProfile) {
     const teacherProfile = document.createElement('div');
     teacherProfile.classList.add('teacher-profile');
     if (teacher.favorite)
         teacherProfile.classList.add('fav');
+    if (favProfile)
+        teacherProfile.classList.add('favorite');
     const profilePicContainer = document.createElement('div');
     profilePicContainer.classList.add('profile-pic-container');
     profilePicContainer.style.border = `3px solid ${teacher.bg_color}`;
@@ -42,15 +44,19 @@ function createTeacherProfile(teacher) {
     const subjectLabel = document.createElement('label');
     subjectLabel.classList.add('subject');
     subjectLabel.textContent = teacher.course;
-    const countryLabel = document.createElement('label');
-    countryLabel.classList.add('country');
-    countryLabel.textContent = teacher.country;
+    let countryLabel = null;
+    if (!favProfile) {
+        countryLabel = document.createElement('label');
+        countryLabel.classList.add('country');
+        countryLabel.textContent = teacher.country;
+    }
     teacherProfile.appendChild(profilePicContainer);
     teacherProfile.appendChild(teacherNameLabel);
     teacherProfile.appendChild(subjectLabel);
-    teacherProfile.appendChild(countryLabel);
+    if (!favProfile)
+        teacherProfile.appendChild(countryLabel);
     teacherProfile.addEventListener('click', () => {
-        const teacher = findTeacherByProfile(teacherProfile);
+        const teacher = findTeacherByProfile(teacherProfile, favProfile);
         if (teacher) {
             showInfoPopup(teacher);
         }
@@ -60,19 +66,18 @@ function createTeacherProfile(teacher) {
     });
     return teacherProfile;
 }
-const profileContainers = document.querySelectorAll('.teacher-profile');
-profileContainers.forEach((container) => {
-    container.addEventListener('click', () => {
-        const teacher = findTeacherByProfile(container);
-        if (teacher) {
-            showInfoPopup(teacher);
-        }
-        else {
-            console.error('Teacher not found.');
-        }
-    });
-});
-function findTeacherByProfile(container) {
+// const profileContainers = document.querySelectorAll('.teacher-profile');
+// profileContainers.forEach((container) => {
+//     container.addEventListener('click', () => {
+//         const teacher = findTeacherByProfile(container as HTMLElement);
+//         if (teacher) {
+//             showInfoPopup(teacher);
+//         } else {
+//             console.error('Teacher not found.');
+//         }
+//     });
+// });
+function findTeacherByProfile(container, favProfile) {
     const name = container.querySelector('.teacher-name')?.textContent;
     const course = container.querySelector('.subject')?.textContent;
     const country = container.querySelector('.country')?.textContent;
@@ -81,7 +86,13 @@ function findTeacherByProfile(container) {
     for (const teacher of users) {
         const isNameMatch = teacher.full_name === name;
         const isCourseMatch = teacher.course === course;
-        const isCountryMatch = teacher.country === country;
+        let isCountryMatch = null;
+        if (!favProfile) {
+            isCountryMatch = teacher.country === country;
+        }
+        else {
+            isCountryMatch = true;
+        }
         const teacherPicture = teacher.picture_large?.replace('http://localhost:3001', '') || null;
         const isPhotoMatch = teacherPicture === photoSrc;
         console.log(`Name: ${isNameMatch} (${teacher.full_name}), Course: ${isCourseMatch}, Country: ${isCountryMatch}, Photo: ${isPhotoMatch} (${teacherPicture})`);
@@ -91,7 +102,9 @@ function findTeacherByProfile(container) {
     }
     return null;
 }
+let currentTeacher = null;
 function showInfoPopup(teacher) {
+    currentTeacher = teacher;
     const popupContainer = document.getElementById('teacher-info-popup');
     popupContainer.style.display = 'flex';
     const popupPhoto = popupContainer.querySelector('.popup-photo');
@@ -122,11 +135,6 @@ function showInfoPopup(teacher) {
     popupNumber.textContent = teacher.phone;
     popupDescription.textContent = teacher.note || 'No additional information.';
     popupContainer.style.display = 'flex';
-    const closeButton = popupContainer.querySelector('.cross-button');
-    closeButton.addEventListener('click', () => {
-        popupContainer.style.display = 'none';
-        updateProfiles();
-    });
     const star = document.getElementById('favourite-star');
     if (teacher.favorite === true) {
         star.style.backgroundImage =
@@ -136,12 +144,19 @@ function showInfoPopup(teacher) {
         star.style.backgroundImage =
             'url("/css/images/empty-star-for-popup.png")';
     }
-    star.addEventListener('click', () => {
-        findTeacherAnMakeHimFav(teacher);
-        star.style.backgroundImage =
-            'url("/css/images/full-star-for-popup.png")';
-    });
 }
+const popupContainer = document.getElementById('teacher-info-popup');
+const closeBtn = popupContainer.querySelector('.cross-button');
+closeBtn.addEventListener('click', () => {
+    popupContainer.style.display = 'none';
+    updateProfiles();
+    loadFavorites();
+});
+const star = document.getElementById('favourite-star');
+star.addEventListener('click', () => {
+    findTeacherAnMakeHimFav(currentTeacher);
+    star.style.backgroundImage = 'url("/css/images/full-star-for-popup.png")';
+});
 function findTeacherAnMakeHimFav(user) {
     for (const teacher of users) {
         const isNameMatch = teacher.full_name === user.full_name;
@@ -149,15 +164,6 @@ function findTeacherAnMakeHimFav(user) {
         const isCountryMatch = teacher.country === user.country;
         const teacherPicture = teacher.picture_large?.replace('http://localhost:3001', '') || '';
         const isPhotoMatch = teacherPicture === user.picture_large;
-        if (teacher.full_name === 'Nora Shevchenko') {
-            console.log(isNameMatch +
-                ' ' +
-                isPhotoMatch +
-                ' ' +
-                user.picture_large +
-                ' ' +
-                teacher.picture_large);
-        }
         if (isNameMatch && isCourseMatch && isCountryMatch && isPhotoMatch) {
             teacher.favorite = true;
         }
@@ -181,7 +187,7 @@ function addTeachersToList(teachers) {
     const container = document.querySelector('.teachers-list');
     if (container) {
         teachers.forEach((teacher) => {
-            const teacherProfile = createTeacherProfile(teacher);
+            const teacherProfile = createTeacherProfile(teacher, false);
             container.appendChild(teacherProfile);
         });
     }
@@ -221,7 +227,6 @@ function clearTeachersList() {
     const teachersList = document.querySelector('.teachers-list');
     teachersList.innerHTML = '';
 }
-// REDO*
 function updateProfiles() {
     clearTeachersList();
     clearTableBody();
@@ -456,6 +461,7 @@ function addTeacherToWebsite() {
         updateProfiles();
         clearTableBody();
         createTable(testModules.sortUsers(getTenUsers(firstUserInList), 'full_name', true));
+        loadFavorites();
         return true;
     }
     else {
@@ -540,5 +546,41 @@ function getLastUserArray() {
         console.error('Wrong lastDisplayOption value!');
     }
 }
+function clearFavorites() {
+    const favoritesList = document.querySelector('.favorites-list');
+    favoritesList.innerHTML = '';
+}
+let currentStartIndex = 0;
+function loadFavorites() {
+    const favorites = testModule.filterUsers(users, { favorite: true });
+    const favoritesList = document.querySelector('.favorites-list');
+    favoritesList.innerHTML = '';
+    const favoritesToShow = favorites.slice(currentStartIndex, currentStartIndex + 4);
+    favoritesToShow.forEach((teacher) => {
+        const profile = createTeacherProfile(teacher, true);
+        favoritesList.appendChild(profile);
+    });
+    updateArrowState(favorites.length);
+}
+function updateArrowState(totalFavorites) {
+    const leftArrow = document.querySelector('.left-arrow-button');
+    const rightArrow = document.querySelector('.right-arrow-button');
+    leftArrow.disabled = currentStartIndex === 0;
+    rightArrow.disabled = currentStartIndex + 4 >= totalFavorites;
+}
+document.querySelector('.left-arrow-button').addEventListener('click', () => {
+    if (currentStartIndex > 0) {
+        currentStartIndex -= 4;
+        loadFavorites();
+    }
+});
+document.querySelector('.right-arrow-button').addEventListener('click', () => {
+    const favorites = testModule.filterUsers(users, { favorite: true });
+    if (currentStartIndex + 4 < favorites.length) {
+        currentStartIndex += 4;
+        loadFavorites();
+    }
+});
 updateProfiles();
+loadFavorites();
 //# sourceMappingURL=app.js.map
