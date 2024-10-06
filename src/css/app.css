@@ -253,7 +253,17 @@ select {
 .page-buttons {
     margin-top: 20px;
     margin-bottom: 70px;
-    margin-left: 10%;
+    margin-left: var(--main-margin);
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-buttons-table {
+    margin-top: 20px;
+    margin-bottom: 70px;
     width: 100%;
     display: flex;
     justify-content: flex-start;
@@ -264,6 +274,7 @@ select {
 .prev,
 .next {
     font-size: 14px;
+    text-align: center;
     background: none;
     border: 1px solid #6eb9c7;
     color: #6eb9c7;

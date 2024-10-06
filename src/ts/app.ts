@@ -738,22 +738,30 @@ closeButton?.addEventListener('click', () => {
     blurContainer.style.display = 'none';
 });
 
-const prevButton = document.querySelector('.prev') as HTMLButtonElement;
-const nextButton = document.querySelector('.next') as HTMLButtonElement;
+const prevButtons = document.querySelectorAll(
+    '.prev',
+) as NodeListOf<HTMLButtonElement>;
+const nextButtons = document.querySelectorAll(
+    '.next',
+) as NodeListOf<HTMLButtonElement>;
 
-prevButton.addEventListener('click', () => {
-    if (firstUserInList > 0) {
-        firstUserInList -= 10;
-        updateProfiles();
-    }
+prevButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        if (firstUserInList > 0) {
+            firstUserInList -= 10;
+            updateProfiles();
+        }
+    });
 });
 
-nextButton.addEventListener('click', () => {
-    const lastUserArray = getLastUserArray();
-    if (firstUserInList + 10 < lastUserArray.length) {
-        firstUserInList += 10;
-        updateProfiles();
-    }
+nextButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const lastUserArray = getLastUserArray();
+        if (firstUserInList + 10 < lastUserArray.length) {
+            firstUserInList += 10;
+            updateProfiles();
+        }
+    });
 });
 
 function getLastUserArray(): User[] {

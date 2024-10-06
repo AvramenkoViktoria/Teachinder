@@ -520,20 +520,24 @@ closeButton?.addEventListener('click', () => {
     }
     blurContainer.style.display = 'none';
 });
-const prevButton = document.querySelector('.prev');
-const nextButton = document.querySelector('.next');
-prevButton.addEventListener('click', () => {
-    if (firstUserInList > 0) {
-        firstUserInList -= 10;
-        updateProfiles();
-    }
+const prevButtons = document.querySelectorAll('.prev');
+const nextButtons = document.querySelectorAll('.next');
+prevButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        if (firstUserInList > 0) {
+            firstUserInList -= 10;
+            updateProfiles();
+        }
+    });
 });
-nextButton.addEventListener('click', () => {
-    const lastUserArray = getLastUserArray();
-    if (firstUserInList + 10 < lastUserArray.length) {
-        firstUserInList += 10;
-        updateProfiles();
-    }
+nextButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const lastUserArray = getLastUserArray();
+        if (firstUserInList + 10 < lastUserArray.length) {
+            firstUserInList += 10;
+            updateProfiles();
+        }
+    });
 });
 function getLastUserArray() {
     if (lastDisplayOption === 'search') {
